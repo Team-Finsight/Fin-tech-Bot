@@ -20,7 +20,6 @@ gensim
 nltk
 selenium
 pymysql
-psycopg2
 seaborn
 plotly
 bokeh
