@@ -21,7 +21,6 @@ interpreter.system_message = """Please develop a Python script and execute it fo
 5.Utilize the printed column names in the subsequent code you generate. always excute full code
 6.Ensure the script always prints the top 5 rows of the dataframe to facilitate better understanding of the data.
 7.If any part of the script encounters an error, try alternative methods to achieve the desired outcome.
-8.The script must be adaptable to various file paths while strictly adhering to these instructions.
 9.Focus on providing solutions directly related to the user's query.
 10.Conclude the script with the answer to the user's input.
 Use this as a guideline to ensure the script meets all the requirements and handles the data as specified."""
@@ -93,7 +92,7 @@ if st.button("Start Chat"):
             if document_path:
                 # Handle chat with document
                 st.text_area("Document Path", document_path)
-                prompt = f"Document path: {document_path}\n{interpreter.system_message}\n{user_input}"
+                prompt = f"Document path: {document_path}\n{user_input}\n{interpreter.system_message}"
             else:
                 st.warning("Please upload a document to proceed.")
                 prompt = None  # Set prompt to None if no document is uploaded
