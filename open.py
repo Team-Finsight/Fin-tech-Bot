@@ -76,13 +76,12 @@ if chat_environment == "Chat with Document":
     if uploaded_file:
         document_path = save_uploaded_file(uploaded_file)
         st.session_state['uploaded_file_path'] = document_path
-    else:
-    # Check if previously uploaded file has been removed
-        if 'uploaded_file_path' in st.session_state and st.session_state['uploaded_file_path'] is not None:
-            # Delete the temporary file
-            delete_temporary_file(st.session_state['uploaded_file_path'])
-            st.session_state['uploaded_file_path'] = None
-            interpreter.reset()
+    
+    if 'uploaded_file_path' in st.session_state and st.session_state['uploaded_file_path'] is None:
+        # Delete the temporary file
+        delete_temporary_file(st.session_state['uploaded_file_path'])
+        st.session_state['uploaded_file_path'] = None
+        interpreter.reset()
 if chat_environment == "General Chat":
     prompt = st.text_input("Write here your message:")
 
