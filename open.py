@@ -12,7 +12,7 @@ litellm.set_verbose = False
 litellm.add_function_to_prompt = True
 interpreter.context_window = 16000
 # Set a system message for the interpreter
-interpreter.system_message = """Please develop a Python script and execute it for the user input that complies with the following criteria:
+interpreter.system_message = """Please develop a Python script that complies with the following criteria:
 
 1.The script should exclusively utilize Python for all data manipulation tasks.
 2.If the document is of type 'xlsx' or 'csv', the script should use the pandas library for processing.
@@ -21,8 +21,7 @@ interpreter.system_message = """Please develop a Python script and execute it fo
 5.Utilize the printed column names in the subsequent code you generate. always excute full code
 6.Ensure the script always prints the top 5 rows of the dataframe to facilitate better understanding of the data.
 7.If any part of the script encounters an error, try alternative methods to achieve the desired outcome.
-8.give the entire code output as well in the response
-8.1.give all the output from the execution of code
+8.The script must be adaptable to various file paths while strictly adhering to these instructions.
 9.Focus on providing solutions directly related to the user's query.
 10.Conclude the script with the answer to the user's input.
 Use this as a guideline to ensure the script meets all the requirements and handles the data as specified."""
@@ -65,23 +64,48 @@ st.markdown(subtitle_html, unsafe_allow_html=True)
 # Radio button to choose chat environment
 chat_environment = st.radio("Choose chat environment:", ["General Chat", "Chat with Document"])
 
+import pandas as pd
+
+# Function to check file type and read the file
+def read_file_if_applicable(file_path):
+    if file_path and file_path.endswith('.csv'):
+        df = pd.read_csv(file_path)
+    elif file_path and file_path.endswith(('.xlsx', '.xlsb', '.xlsm', '.xls')):
+        df = pd.read_excel(file_path)
+    else:
+        return None
+
+    # Extract column names and top 3 rows
+    column_names = df.columns.tolist()
+    top_rows = df.head(3).to_string(index=False)
+    return column_names, top_rows
 # Initialize variables
 uploaded_file = None
 document_path = None
 
 # Handle file upload and text input based on chat environment
 if chat_environment == "Chat with Document":
-    uploaded_file = st.file_uploader("Upload a document", type=["txt", "pdf", "csv","xlsx","xlsb","xlsm","xls"])
+    uploaded_file = st.file_uploader("Upload a document", type=["txt", "pdf", "csv", "xlsx", "xlsb", "xlsm", "xls"])
     user_input = st.text_input("Write here your message:")
     if uploaded_file:
         document_path = save_uploaded_file(uploaded_file)
         st.session_state['uploaded_file_path'] = document_path
-    
-    if 'uploaded_file_path' in st.session_state and st.session_state['uploaded_file_path'] is None:
-        # Delete the temporary file
-        delete_temporary_file(st.session_state['uploaded_file_path'])
-        st.session_state['uploaded_file_path'] = None
-        interpreter.reset()
+
+        # Check if document_path is not None before proceeding
+        if document_path:
+            file_info = read_file_if_applicable(document_path)
+            if file_info:
+                column_names, top_rows = file_info
+                # Append the extracted info to the user_input
+                user_input += f"\nColumn Names: {column_names}\nTop 3 Rows:\n{top_rows}"
+    else:
+    # Check if previously uploaded file has been removed
+        if 'uploaded_file_path' in st.session_state and st.session_state['uploaded_file_path'] is not None:
+            # Delete the temporary file
+            delete_temporary_file(st.session_state['uploaded_file_path'])
+            st.session_state['uploaded_file_path'] = None
+            document_path = None  # Reset document_path
+
 if chat_environment == "General Chat":
     prompt = st.text_input("Write here your message:")
 
@@ -93,7 +117,7 @@ if st.button("Start Chat"):
             if document_path:
                 # Handle chat with document
                 st.text_area("Document Path", document_path)
-                prompt = f"Document path: {document_path}\n{user_input}\n{interpreter.system_message}"
+                prompt = f"Document path: {document_path}\n{interpreter.system_message}\n{user_input}"
             else:
                 st.warning("Please upload a document to proceed.")
                 prompt = None  # Set prompt to None if no document is uploaded
@@ -101,7 +125,7 @@ if st.button("Start Chat"):
 
             with st.chat_message("assistant"):
                 codeb = True
-                outputb = False
+                outputb = True
                 full_response = ""
                 message_placeholder = st.empty()
                 for chunk in interpreter.chat(prompt, display=True, stream=True):
