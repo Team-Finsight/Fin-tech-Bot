@@ -12,7 +12,7 @@ litellm.set_verbose = False
 litellm.add_function_to_prompt = True
 interpreter.context_window = 16000
 # Set a system message for the interpreter
-interpreter.system_message = """Please develop a Python script that complies with the following criteria:
+interpreter.system_message = """Please develop a Python script and execute it for the user input that complies with the following criteria:
 
 1.The script should exclusively utilize Python for all data manipulation tasks.
 2.If the document is of type 'xlsx' or 'csv', the script should use the pandas library for processing.
