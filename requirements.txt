@@ -1,7 +1,6 @@
 streamlit
 streamlit_chat
 langchain
-tempfile
 python-dateutil==2.8.1
 requests==2.25.1
 numpy==1.19.5
