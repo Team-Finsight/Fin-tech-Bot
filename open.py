@@ -81,7 +81,7 @@ if chat_environment == "Chat with Document":
             # Delete the temporary file
             delete_temporary_file(st.session_state['uploaded_file_path'])
             st.session_state['uploaded_file_path'] = None
-
+            interpreter.reset()
 if chat_environment == "General Chat":
     prompt = st.text_input("Write here your message:")
 
