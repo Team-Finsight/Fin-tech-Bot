@@ -12,11 +12,10 @@ open-interpreter
 litellm
 tensorflow
 keras
-pytorch
+torch
 torchvision
 transformers
 spacy
-gensim
 nltk
 selenium
 pymysql
@@ -25,4 +24,3 @@ plotly
 bokeh
 lxml
 regex
-pyyaml
