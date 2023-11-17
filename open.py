@@ -21,6 +21,8 @@ interpreter.system_message = """Please develop a Python script and execute it fo
 5.Utilize the printed column names in the subsequent code you generate. always excute full code
 6.Ensure the script always prints the top 5 rows of the dataframe to facilitate better understanding of the data.
 7.If any part of the script encounters an error, try alternative methods to achieve the desired outcome.
+8.give the entire code output as well in the response
+8.1.give all the output from the execution of code
 9.Focus on providing solutions directly related to the user's query.
 10.Conclude the script with the answer to the user's input.
 Use this as a guideline to ensure the script meets all the requirements and handles the data as specified."""
