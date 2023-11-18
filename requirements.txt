@@ -15,17 +15,11 @@ keras
 torch
 PyPDF2
 PDFMiner
-ReportLab
-pdfrw
 PyMuPDF
 pptx-template
 pypptx
 pandas
 openpyxl
-xlrd
-xlwt
-XlsxWriter
-pyexcelerate
 transformers
 spacy
 nltk
