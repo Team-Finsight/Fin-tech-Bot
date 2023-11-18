@@ -20,7 +20,7 @@ pdfrw
 PyMuPDF
 python-pptx
 pptx-template
-py2pptx
+pypptx
 pandas
 openpyxl
 xlrd
