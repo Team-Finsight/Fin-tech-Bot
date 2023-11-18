@@ -125,7 +125,7 @@ if st.button("Start Chat"):
 
             with st.chat_message("assistant"):
                 codeb = True
-                outputb = True
+                outputb = False
                 full_response = ""
                 message_placeholder = st.empty()
                 for chunk in interpreter.chat(prompt, display=True, stream=True):
@@ -150,32 +150,33 @@ if st.button("Start Chat"):
                             full_response += f"```{chunk['code']}```"
                         
                         # Output
-                        if "executing" in chunk:
-                            # Handle code execution messages
-                            if full_response.endswith("```") and full_response[:len(full_response)-3].split("```")[-1].find("\n") != -1:
-                                full_response = full_response[:len(full_response)-3] + "\n```"
-                            full_response += f"\n\n```{chunk['executing']['language']}\n{chunk['executing']['code']}\n```"
-                        if "output" in chunk:
-                            # Handle output messages
-                            if chunk["output"] != "KeyboardInterrupt" and outputb:
-                                full_response = full_response[:len(full_response)-4] + chunk['output'] + "\n```\n"
-                            elif chunk["output"] != "KeyboardInterrupt":
-                                full_response += f"\n\n```text\n{chunk['output']}```\n"
-                                outputb = True
-                            codeb = True
+                    if "executing" in chunk:
+                        # Handle code execution messages
+                        if full_response.endswith("```") and full_response[:len(full_response)-3].split("```")[-1].find("\n") != -1:
+                            full_response = full_response[:len(full_response)-3] + "\n```"
+                        full_response += f"\n\n```{chunk['executing']['language']}\n{chunk['executing']['code']}\n```"
+                    if "output" in chunk:
+                        st.write("Output:", chunk["output"])
+                        # Handle output messages
+                        if chunk["output"] != "KeyboardInterrupt" and outputb:
+                            full_response = full_response[:len(full_response)-4] + chunk['output'] + "\n```\n"
+                        elif chunk["output"] != "KeyboardInterrupt":
+                            full_response += f"\n\n```text\n{chunk['output']}```\n"
+                            outputb = True
+                        codeb = True
 
-                        if "end_of_execution" in chunk:
-                            # Add a newline to separate executions
-                            full_response = full_response.strip()
-                            full_response += "\n"
+                    if "end_of_execution" in chunk:
+                        # Add a newline to separate executions
+                        full_response = full_response.strip()
+                        full_response += "\n"
 
                         # Join the formatted messages
                         # full_response += json.dumps(chunk)
-                        message_placeholder.markdown(full_response + "▌")
-                        message_placeholder.markdown(full_response)
+                        #message_placeholder.markdown(full_response + "▌")
+                        #message_placeholder.markdown(full_response)
 
                 st.session_state.messages.append({"role": "assistant", "content": full_response})
-        
+                print(interpreter.messages)
         elif chat_environment == "General Chat" and prompt:
             # General chat environment
             with st.chat_message("user"):
@@ -211,26 +212,26 @@ if st.button("Start Chat"):
                             full_response += f"```{chunk['code']}```"
                         
                         # Output
-                        if "executing" in chunk:
-                            # Handle code execution messages
-                            if full_response.endswith("```") and full_response[:len(full_response)-3].split("```")[-1].find("\n") != -1:
-                                full_response = full_response[:len(full_response)-3] + "\n```"
-                            full_response += f"\n\n```{chunk['executing']['language']}\n{chunk['executing']['code']}\n```"
-                        if "output" in chunk:
-                            # Handle output messages
-                            if chunk["output"] != "KeyboardInterrupt" and outputb:
-                                full_response = full_response[:len(full_response)-4] + chunk['output'] + "\n```\n"
-                            elif chunk["output"] != "KeyboardInterrupt":
-                                full_response += f"\n\n```text\n{chunk['output']}```\n"
-                                outputb = True
-                            codeb = True
+                    if "executing" in chunk:
+                        # Handle code execution messages
+                        if full_response.endswith("```") and full_response[:len(full_response)-3].split("```")[-1].find("\n") != -1:
+                            full_response = full_response[:len(full_response)-3] + "\n```"
+                        full_response += f"\n\n```{chunk['executing']['language']}\n{chunk['executing']['code']}\n```"
+                    if "output" in chunk:
+                        # Handle output messages
+                        if chunk["output"] != "KeyboardInterrupt" and outputb:
+                            full_response = full_response[:len(full_response)-4] + chunk['output'] + "\n```\n"
+                        elif chunk["output"] != "KeyboardInterrupt":
+                            full_response += f"\n\n```text\n{chunk['output']}```\n"
+                            outputb = True
+                        codeb = True
 
-                        if "end_of_execution" in chunk:
-                            # Add a newline to separate executions
-                            full_response = full_response.strip()
-                            full_response += "\n"
-                        message_placeholder.markdown(full_response + "▌")
-                        message_placeholder.markdown(full_response)
+                    if "end_of_execution" in chunk:
+                        # Add a newline to separate executions
+                        full_response = full_response.strip()
+                        full_response += "\n"
+                    #message_placeholder.markdown(full_response + "▌")
+                    #message_placeholder.markdown(full_response)
 
                 st.session_state.messages.append({"role": "assistant", "content": full_response})
 
