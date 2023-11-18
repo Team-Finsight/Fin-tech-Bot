@@ -22,6 +22,3 @@ nltk
 pymysql
 seaborn
 plotly
-bokeh
-lxml
-regex
