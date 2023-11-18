@@ -19,7 +19,7 @@ ReportLab
 pdfrw
 PyMuPDF
 python-pptx
-python-pptx-template
+pptx-template
 py2pptx
 pandas
 openpyxl
