@@ -14,7 +14,6 @@ tensorflow
 keras
 torch
 PyMuPDF
-pypptx
 openpyxl
 transformers
 spacy
