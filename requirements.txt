@@ -13,17 +13,12 @@ litellm
 tensorflow
 keras
 torch
-PyPDF2
-PDFMiner
 PyMuPDF
-pptx-template
 pypptx
-pandas
 openpyxl
 transformers
 spacy
 nltk
-selenium
 pymysql
 seaborn
 plotly
