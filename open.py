@@ -26,6 +26,21 @@ interpreter.system_message = """Please develop a Python script that complies wit
 10.Conclude the script with the answer to the user's input.
 Use this as a guideline to ensure the script meets all the requirements and handles the data as specified."""
 
+general_chat_system_message = """Please develop a Python script with the following guidelines:
+
+1. The script should be written in Python and geared towards automating website document creation and manipulation.
+2. For creating and editing HTML or website documents, the script may use libraries like Beautiful Soup or LXML for parsing and manipulating HTML.
+3. For tasks involving CSS or JavaScript, consider libraries such as cssutils or PyMiniRacer respectively.
+4. When dealing with PowerPoint presentations, use the python-pptx library to create slides, add text, images, and other multimedia elements.
+5. Ensure all file paths are specified using raw string literals, for instance: file_path = r'your_file_path_here'.
+6. The script should include comments explaining the functionality of each section or function.
+7. Include error handling to manage any potential issues that may arise during file manipulation.
+8. Make the script dynamic, allowing for different input parameters such as file paths, document titles, or presentation templates.
+9. Provide clear output messages to the user, indicating the status of document or presentation creation.
+10. The final part of the script should demonstrate the successful creation or manipulation of a document or presentation with an example output.
+
+Adhere to these instructions to ensure the script is robust, user-friendly, and flexible enough to handle various scenarios for website document and PowerPoint presentation automation."""
+
 # Function to save the uploaded file to a temporary location
 def save_uploaded_file(uploaded_file):
     try:
@@ -105,10 +120,9 @@ if chat_environment == "Chat with Document":
             delete_temporary_file(st.session_state['uploaded_file_path'])
             st.session_state['uploaded_file_path'] = None
             document_path = None  # Reset document_path
-
 if chat_environment == "General Chat":
-    prompt = st.text_input("Write here your message:")
-
+    user_input = st.text_input("Write here your message:")
+    prompt = f"{general_chat_system_message}\n{user_input}"
 
 # Start Chat button functionality
 if st.button("Start Chat"):
@@ -148,13 +162,12 @@ if st.button("Start Chat"):
                                 full_response = full_response[:len(full_response)-3] + chunk['code'] + "```"
                         else:
                             full_response += f"```{chunk['code']}```"
-                        
-                        # Output
                     if "executing" in chunk:
                         # Handle code execution messages
                         if full_response.endswith("```") and full_response[:len(full_response)-3].split("```")[-1].find("\n") != -1:
                             full_response = full_response[:len(full_response)-3] + "\n```"
-                        full_response += f"\n\n```{chunk['executing']['language']}\n{chunk['executing']['code']}\n```"
+                        full_response += f"\n\n```{chunk['executing']['language']}\n{chunk['executing']['code']}\n```"    
+                        # Output
                     if "output" in chunk:
                         st.write("Output:", chunk["output"])
                         # Handle output messages
@@ -172,7 +185,7 @@ if st.button("Start Chat"):
 
                         # Join the formatted messages
                         # full_response += json.dumps(chunk)
-                        #message_placeholder.markdown(full_response + "▌")
+                        message_placeholder.markdown(full_response + "▌")
                         #message_placeholder.markdown(full_response)
 
                 st.session_state.messages.append({"role": "assistant", "content": full_response})
@@ -180,7 +193,7 @@ if st.button("Start Chat"):
         elif chat_environment == "General Chat" and prompt:
             # General chat environment
             with st.chat_message("user"):
-                st.text(prompt)
+                st.text(user_input)
                 st.session_state.messages.append({"role": "user", "content": prompt})
 
             with st.chat_message("assistant"):
@@ -230,7 +243,7 @@ if st.button("Start Chat"):
                         # Add a newline to separate executions
                         full_response = full_response.strip()
                         full_response += "\n"
-                    #message_placeholder.markdown(full_response + "▌")
+                    message_placeholder.markdown(full_response + "▌")
                     #message_placeholder.markdown(full_response)
 
                 st.session_state.messages.append({"role": "assistant", "content": full_response})
